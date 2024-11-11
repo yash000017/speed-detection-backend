@@ -16,15 +16,15 @@ export const planValidation: ObjectSchema = Joi.object({
       'number.positive': 'Plan rate must be a positive number',
       'any.required': 'Plan rate is required',
     }),
-  planDuration: Joi.number()
+  ballCount: Joi.number()
     .integer()
     .positive()
     .required()
     .messages({
-      'number.base': 'Plan duration should be a number',
-      'number.integer': 'Plan duration should be an integer',
-      'number.positive': 'Plan duration must be a positive integer',
-      'any.required': 'Plan duration is required',
+      'number.base': 'Ball count should be a number',
+      'number.integer': 'Ball count should be an integer',
+      'number.positive': 'Ball count must be a positive integer',
+      'any.required': 'Ball count is required',
     }),
   planDescription: Joi.string()
     .optional()

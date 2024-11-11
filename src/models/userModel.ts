@@ -1,5 +1,6 @@
-import { DataTypes, Model, Optional } from 'sequelize';
+import { DataTypes, Model, Optional, HasManyGetAssociationsMixin } from 'sequelize';
 import db from '../config/database';
+import UserPlan from './userPlanModel';
 
 // Define the User attributes
 interface UserAttributes {
@@ -10,8 +11,10 @@ interface UserAttributes {
     age: number;
     role: 'admin' | 'user';
     currentToken?: string | null;
-    resetOtp?: string | null; // Add field for storing the hashed OTP
-    resetOtpExpires?: string | null; // Change to string for ISO date
+    resetOtp?: string | null;
+    resetOtpExpires?: string | null;
+    userPlans?: UserPlan[]; // Add userPlans property
+    createdAt?: Date;
 }
 
 // Define the optional attributes for creating a User
@@ -26,8 +29,12 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
     public age!: number;
     public role!: 'admin' | 'user';
     public currentToken?: string | null;
-    public resetOtp?: string | null; // Property to store the hashed OTP
-    public resetOtpExpires?: string | null; // Change to string for ISO date
+    public resetOtp?: string | null;
+    public resetOtpExpires?: string | null;
+    public createdAt!: Date;
+    
+    public readonly userPlans?: UserPlan[];
+    // public getUserPlans!: HasManyGetAssociationsMixin<UserPlan>; // Method to get associated UserPlans
 }
 
 // Initialize the User model
@@ -64,22 +71,33 @@ User.init(
         },
         currentToken: {
             type: DataTypes.STRING,
-            allowNull: true, // Allow null for users who are not logged in
+            allowNull: true,
         },
         resetOtp: {
             type: DataTypes.STRING,
-            allowNull: true, // Allow null when no OTP is generated
+            allowNull: true,
         },
         resetOtpExpires: {
-            type: DataTypes.STRING, // Change to string for ISO date
-            allowNull: true, // Allow null when no OTP expiration is set
+            type: DataTypes.STRING,
+            allowNull: true,
         },
+        createdAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
+          },
     },
     {
-        sequelize: db.sequelize, // Pass the `sequelize` instance
+        sequelize: db.sequelize,
         modelName: 'User',
-        tableName: 'users', // Specify the table name
+        tableName: 'users',
     }
 );
+
+// Define associations
+User.hasMany(UserPlan, {
+    foreignKey: 'userId', // Assuming 'userId' is the foreign key in UserPlan
+    as: 'userPlans', // Alias for the association
+});
 
 export default User;

@@ -1,12 +1,13 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import db from '../config/database';
+import UserPlan from './userPlanModel';
 
 // Define the Plan attributes
 interface PlanAttributes {
     planId: string;
     planName: string;
     planRate: number;
-    planDuration: number; // e.g., duration in months
+    ballCount: number; // New field for ball count
     planDescription?: string; // Optional field for description
 }
 
@@ -18,7 +19,7 @@ class Plan extends Model<PlanAttributes, PlanCreationAttributes> implements Plan
     public planId!: string;
     public planName!: string;
     public planRate!: number;
-    public planDuration!: number;
+    public ballCount!: number; // Include the new field
     public planDescription?: string;
 }
 
@@ -28,7 +29,6 @@ Plan.init(
         planId: {
             type: DataTypes.STRING,
             allowNull: false,
-            // unique: true,
             primaryKey: true,
         },
         planName: {
@@ -39,9 +39,9 @@ Plan.init(
             type: DataTypes.FLOAT,
             allowNull: false,
         },
-        planDuration: {
-            type: DataTypes.INTEGER,
-            allowNull: false, // e.g., 1 for 1 month, 12 for a year, etc.
+        ballCount: {
+            type: DataTypes.INTEGER, // New field definition
+            allowNull: false, // Make it a required field
         },
         planDescription: {
             type: DataTypes.TEXT,
@@ -54,5 +54,10 @@ Plan.init(
         tableName: 'plans', // specify the table name
     }
 );
+
+// Plan.hasMany(UserPlan, {
+//     foreignKey: 'planId', // Assuming 'userId' is the foreign key in UserPlan
+//     as: 'userPlans', // Alias for the association
+// });
 
 export default Plan;

@@ -86,7 +86,6 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const user = await User.findOne({ where: { email } });
 
-    
     if (!user) {
       res.status(401).json({
         status: "false",
@@ -106,16 +105,11 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // Check if the user is already logged in
     if (user.currentToken) {
-      // User is logged in on another device
       if (logoutFromOtherDevice === true) {
-        console.log("Logging out user from previous device.");
-        // Invalidate the previous token
-        user.currentToken = ""; // Clear the token
+        user.currentToken = ""; 
         await user.save();
       } else {
-        // User opted not to logout from previous device
         res.status(401).json({
           status: "false",
           message: "User is already logged in on another device. Please log out from the other device to log in here.",

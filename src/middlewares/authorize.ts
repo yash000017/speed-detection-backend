@@ -5,8 +5,7 @@ import { CustomRequestAuth } from "../types/express";
 const authorize = (...allowedRoles: string[]): RequestHandler => {
   return (req: CustomRequestAuth, res: Response, next: NextFunction): void => {
     const user = req.user; // Ensure req.user is populated by authentication middleware
-    console.log("user", user);
-
+    console.log("user1",user)
     if (user && allowedRoles.includes(user.role)) {
       return next(); // User is authorized
     }
